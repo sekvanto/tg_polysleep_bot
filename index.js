@@ -6,6 +6,7 @@ const shlex = require('shlex');
 const fs = require('fs');
 const { URL } = require('url');
 const { getOrGenImg, createChart } = require("./imageCache");
+const { logMessage } = require("./logging");
 
 const usage = 'Введите /create , за которым следуют отрезки времени, по желанию с префиксом цвета и метки; разделите полосы символом ";"'
   + '\nПример:'
@@ -28,7 +29,7 @@ const validRegex = /^(((((\w+)(=\w+)?) )?((\d{1,2}(:\d{1,2})?)-(\d{1,2}(:\d{1,2}
 
 const prefix = '+create '
 
-bot.onText(/\/create/, (msg, match) => {
+bot.onText(/\/create(.*)/, (msg, match) => {
   const arg = match[1];
   create(arg, msg);
 });
@@ -44,6 +45,10 @@ bot.onText(/\/help/, (msg, match) => {
 
 bot.onText(/\/start/, (msg, match) => {
   bot.sendMessage(msg.chat.id, start);
+});
+
+bot.on('message', (msg) => {
+  logMessage(msg);
 });
 
 async function create(commandBody, message) {
